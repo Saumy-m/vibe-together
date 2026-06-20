@@ -1,3 +1,7 @@
+"use client";
+
 import ProfilePage from "./profile.js";
 
-export default ProfilePage;
+export default function Page() {
+  return <ProfilePage />;
+}

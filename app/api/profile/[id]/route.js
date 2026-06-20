@@ -24,20 +24,14 @@ async function reverseGeocodeLocation(latitude, longitude) {
 
     if (data.address) {
       const address = data.address;
-
       return {
         street:
           address.house_number && address.road
             ? `${address.house_number} ${address.road}`
             : address.building || address.amenity || address.shop || "",
         city:
-          address.city ||
-          address.town ||
-          address.village ||
-          address.hamlet ||
-          "",
-        state:
-          address.state || address.county || address.province || "",
+          address.city || address.town || address.village || address.hamlet || "",
+        state: address.state || address.county || address.province || "",
         country: address.country || "",
         zipCode: address.postcode || "",
       };
@@ -50,11 +44,10 @@ async function reverseGeocodeLocation(latitude, longitude) {
   }
 }
 
-export async function GET(req) {
+// ✅ Added { params } to read the [id] from the URL path
+export async function GET(req, { params }) {
   try {
-
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    const { id } = await params; // ✅ was searchParams.get("id") — that reads ?id= query string, not the URL segment
 
     if (!id) {
       return NextResponse.json(
@@ -62,11 +55,12 @@ export async function GET(req) {
         { status: 400 }
       );
     }
+
     await connectToDatabase();
+
     const user = await User.findById(id).select(
       "-password -locationAddress -locationGeoJSON -email -__v"
     );
-
 
     if (!user) {
       return NextResponse.json(
@@ -75,17 +69,16 @@ export async function GET(req) {
       );
     }
 
+    // ✅ Changed "profile" to "user" to match what profile.js expects (data.user)
     return NextResponse.json(
       {
-        profile: {
+        user: {
           name: user.name,
           bio: user.bio,
           interests: user.interests,
           energyLevel: user.energyLevel,
           profilePhoto: user.profilePhoto,
           location: user.location,
-          locationAddress: user.locationAddress,
-          locationGeoJSON: user.locationGeoJSON,
         },
       },
       { status: 200 }
@@ -178,5 +171,3 @@ export async function PUT(req) {
     );
   }
 }
-  
-
