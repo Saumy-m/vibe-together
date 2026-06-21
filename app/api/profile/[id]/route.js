@@ -133,6 +133,10 @@ export async function PUT(req) {
       const addressData = await reverseGeocodeLocation(latitude, longitude);
       if (addressData) {
         updateData.locationAddress = addressData;
+
+        updateData.location = [addressData.street, addressData.city, addressData.state]
+      .filter(Boolean)
+      .join(", ");
       }
     }
 

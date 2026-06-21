@@ -73,10 +73,6 @@ export default function ProfilePage() {
         const { latitude, longitude } = position.coords;
         setGeoCoordinates({ latitude, longitude });
         setError("");
-        setProfileData((prev) => ({
-          ...prev,
-          location: `Coordinates captured`,
-        }));
       },
       (error) => {
         console.error("Geolocation error:", error.code, error.message);
@@ -112,6 +108,7 @@ export default function ProfilePage() {
       if (geoCoordinates) {
         saveData.latitude = geoCoordinates.latitude;
         saveData.longitude = geoCoordinates.longitude;
+        delete saveData.location; 
       }
 
       const response = await fetch(`/api/profile/${id}`, {
