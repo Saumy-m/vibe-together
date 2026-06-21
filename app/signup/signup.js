@@ -39,6 +39,7 @@ export default function SignupPage() {
       });
 
       const data = await response.json();
+      console.log("Signup response:", data);
 
       if (!response.ok) {
         setError(data.message || "Signup failed");
@@ -47,8 +48,9 @@ export default function SignupPage() {
       }
 
       localStorage.setItem("userEmail", formData.email);
+      localStorage.setItem("userId", data.user.id);
       alert("Account created successfully!");
-      router.push("/profile");
+      router.push(`/profile/${data.user.id}`);
     } catch (error) {
       console.error(error);
       setError("Something went wrong");
