@@ -1,7 +1,13 @@
+
+// Updated Documented lines and Interests Value type from String -> Array
+
+// import statements
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/model/user";
 
+// function to identify location from latitude longtitude coordinates
+// used LocationIQ API to Reverse Geocode coordinates to Location Data
 async function reverseGeocodeLocation(latitude, longitude) {
   try {
     const locationIQApiKey = process.env.LOCATIONIQ_API_KEY;
@@ -44,10 +50,10 @@ async function reverseGeocodeLocation(latitude, longitude) {
   }
 }
 
-// ✅ Added { params } to read the [id] from the URL path
+// responds to Get Requests from the user loading the users profile 
 export async function GET(req, { params }) {
   try {
-    const { id } = await params; // ✅ was searchParams.get("id") — that reads ?id= query string, not the URL segment
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(
@@ -69,13 +75,12 @@ export async function GET(req, { params }) {
       );
     }
 
-    // ✅ Changed "profile" to "user" to match what profile.js expects (data.user)
     return NextResponse.json(
       {
         user: {
           name: user.name,
           bio: user.bio,
-          interests: user.interests,
+          interests: user.interests, 
           energyLevel: user.energyLevel,
           profilePhoto: user.profilePhoto,
           location: user.location,
@@ -92,19 +97,22 @@ export async function GET(req, { params }) {
   }
 }
 
+// recieves user request for login or profile updates
 export async function PUT(req) {
   try {
     const {
       email,
       name,
       bio,
-      interests,
+      interests,   
       energyLevel,
       profilePhoto,
       latitude,
       longitude,
       location,
     } = await req.json();
+
+    console.log("Completed request body access");
 
     if (!email) {
       return NextResponse.json(
@@ -116,12 +124,12 @@ export async function PUT(req) {
     await connectToDatabase();
 
     const updateData = {
-      name: name || "",
-      bio: bio || "",
-      interests: interests || "",
-      energyLevel: energyLevel || "",
+      name:         name         || "",
+      bio:          bio          || "",
+      interests: Array.isArray(interests) ? interests : [],
+      energyLevel:  energyLevel  || "",
       profilePhoto: profilePhoto || "",
-      location: location || "",
+      location:     location     || "",
     };
 
     if (latitude && longitude) {
@@ -133,16 +141,13 @@ export async function PUT(req) {
       const addressData = await reverseGeocodeLocation(latitude, longitude);
       if (addressData) {
         updateData.locationAddress = addressData;
-
         updateData.location = [addressData.street, addressData.city, addressData.state]
-      .filter(Boolean)
-      .join(", ");
+          .filter(Boolean)
+          .join(", ");
       }
     }
 
-    const user = await User.findOneAndUpdate({ email }, updateData, {
-      new: true,
-    });
+    const user = await User.findOneAndUpdate({ email }, updateData, { new: true });
 
     if (!user) {
       return NextResponse.json(
@@ -155,12 +160,12 @@ export async function PUT(req) {
       {
         message: "Profile updated successfully",
         profile: {
-          name: user.name,
-          bio: user.bio,
-          interests: user.interests,
-          energyLevel: user.energyLevel,
-          profilePhoto: user.profilePhoto,
-          location: user.location,
+          name:            user.name,
+          bio:             user.bio,
+          interests:       user.interests,   // ← returned so frontend can sync
+          energyLevel:     user.energyLevel,
+          profilePhoto:    user.profilePhoto,
+          location:        user.location,
           locationAddress: user.locationAddress,
           locationGeoJSON: user.locationGeoJSON,
         },

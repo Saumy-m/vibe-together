@@ -24,8 +24,8 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     interests: {
-      type: String,
-      default: "",
+      type: [String],
+      default: [],
       trim: true,
     },
     energyLevel: {

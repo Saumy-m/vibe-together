@@ -17,6 +17,7 @@ body {
 }
 
 @layer utilities {
+
   /* Button Classes - Modern gradient and glassmorphism effects */
   .btn-primary {
     @apply px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 border border-blue-400/30;
