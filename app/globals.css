@@ -10,38 +10,44 @@
   --accent-light: #a78bfa;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Segoe UI", Trebuchet MS, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 @layer utilities {
 
   /* Button Classes - Modern gradient and glassmorphism effects */
   .btn-primary {
-    @apply px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 border border-blue-400/30;
+    @apply px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 border border-blue-400/30 text-sm sm:text-base;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-slate-700 to-slate-800 text-white hover:from-slate-600 hover:to-slate-700 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 border border-slate-600/50;
+    @apply px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold bg-gradient-to-r from-slate-700 to-slate-800 text-white hover:from-slate-600 hover:to-slate-700 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 border border-slate-600/50 text-sm sm:text-base;
   }
 
   .btn-nav-primary {
-    @apply px-5 py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300 border border-blue-400/30;
+    @apply px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300 border border-blue-400/30 text-sm sm:text-base;
   }
 
   .btn-nav-secondary {
-    @apply px-5 py-2.5 rounded-lg font-semibold text-slate-300 border border-slate-600/50 hover:border-slate-400/80 hover:text-white hover:bg-slate-700/50 transition-all duration-300;
+    @apply px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-semibold text-slate-300 border border-slate-600/50 hover:border-slate-400/80 hover:text-white hover:bg-slate-700/50 transition-all duration-300 text-sm sm:text-base;
   }
 
   /* Form Input Classes - Modern glassmorphism */
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300;
+    @apply w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 text-base;
   }
 
   .input-field-light {
-    @apply w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:outline-none focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300;
+    @apply w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:outline-none focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 text-base;
   }
 
   /* Form Container */
@@ -55,12 +61,12 @@ body {
   }
 
   .card-dark {
-    @apply w-full max-w-md bg-gradient-to-br from-slate-800/60 to-slate-900/80 rounded-2xl shadow-2xl border border-slate-700/50 p-8 backdrop-blur-xl;
+    @apply w-full max-w-md sm:max-w-lg bg-gradient-to-br from-slate-800/60 to-slate-900/80 rounded-2xl shadow-2xl border border-slate-700/50 p-6 sm:p-8 backdrop-blur-xl;
   }
 
   /* Typography Classes - Enhanced contrast and hierarchy */
   .heading-h1-large {
-    @apply text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight drop-shadow-lg;
+    @apply text-4xl sm:text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight drop-shadow-lg;
   }
 
   .heading-h1-page {
@@ -103,24 +109,24 @@ body {
 
   /* Section/Layout Classes */
   .section-hero {
-    @apply px-6 py-20 bg-gradient-to-b from-slate-900 via-blue-900/20 to-slate-900;
+    @apply px-4 sm:px-6 py-16 sm:py-20 bg-gradient-to-b from-slate-900 via-blue-900/20 to-slate-900;
   }
 
   .section-features {
-    @apply px-6 pb-20;
+    @apply px-4 sm:px-6 pb-16 sm:pb-20;
   }
 
   /* Navigation Container - Modern glassmorphism */
   .nav-container {
-    @apply w-full border-b bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-xl;
+    @apply w-full border-b bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-xl sticky top-0 z-50;
   }
 
   .nav-wrapper {
-    @apply max-w-7xl mx-auto flex items-center justify-between px-6 py-4;
+    @apply max-w-7xl mx-auto flex flex-col gap-3 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between;
   }
 
   .nav-links {
-    @apply flex items-center gap-6;
+    @apply flex flex-wrap items-center gap-3 sm:gap-6;
   }
 
   /* Grid Classes */
