@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navigation.js";
+import ActivityDropdown, { activityLabel } from "../components/interests.js";
+
 
 export default function SignupPage() {
   const router = useRouter();
@@ -11,11 +13,11 @@ export default function SignupPage() {
     email: "",
     password: "",
     bio: "",
-    interests: "",
     energyLevel: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export default function SignupPage() {
           email: formData.email,
           password: formData.password,
           bio: formData.bio,
-          interests: formData.interests,
+          interests: selectedInterests,
           energyLevel: formData.energyLevel,
         }),
       });
@@ -113,14 +115,42 @@ export default function SignupPage() {
               className="input-field"
             />
 
-            <input
-              type="text"
-              name="interests"
-              placeholder="Interests - comma separated (optional)"
-              value={formData.interests}
-              onChange={handleChange}
-              className="input-field"
-            />
+            <div className="mb-6">
+              <label className="block text-sm text-slate-400 mb-2">
+                Interests
+                <span style={{ fontWeight: 400, color: "#64748b", fontSize: "0.8rem" }}> — pick as many as you like</span>
+              </label>
+              <ActivityDropdown
+                interests={selectedInterests}
+                onChange={setSelectedInterests}
+              />
+              
+              {selectedInterests?.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
+                  {selectedInterests.map((actId) => (
+                    <span key={actId} style={{
+                      display: "inline-flex", alignItems: "center", gap: "5px",
+                      padding: "3px 10px",
+                      background: "rgba(129,140,248,0.15)",
+                      border: "1px solid rgba(129,140,248,0.3)",
+                      borderRadius: "99px", color: "#a5b4fc",
+                      fontSize: "0.78rem", fontWeight: 600, textTransform: "capitalize",
+                    }}>
+                      {activityLabel(actId)}
+                      <button type="button"
+                        onClick={() => setSelectedInterests(selectedInterests.filter((x) => x !== actId))}
+                        style={{
+                          background: "none", border: "none", color: "#818cf8",
+                          cursor: "pointer", fontSize: "0.9rem", lineHeight: 1, padding: 0
+                        }}
+                        aria-label={`Remove ${activityLabel(actId)}`}>
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <select
               name="energyLevel"
