@@ -77,6 +77,36 @@ export default function MatchingPage() {
     }
   };
 
+  const handleConnect = async (matchId: string) => {
+    const currentUserId = localStorage.getItem("userId");
+    if (!currentUserId) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/chat/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderId: currentUserId,
+          receiverId: matchId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Failed to create conversation:", data.message);
+        return;
+      }
+
+      router.push(`/chats/${data.conversationId}`);
+    } catch (err) {
+      console.error("Connect error:", err);
+    }
+  };
+
   const getDisplayMatches = () => {
     if (activeTab === "nearby") return nearbyMatches;
     if (activeTab === "online") return onlineMatches;
@@ -121,33 +151,30 @@ export default function MatchingPage() {
           <div className="flex gap-4 mb-8 flex-wrap justify-center">
             <button
               onClick={() => setActiveTab("nearby")}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                activeTab === "nearby"
+              className={`px-6 py-2 rounded-lg font-semibold transition-all ${activeTab === "nearby"
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                   : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
-              }`}
+                }`}
             >
               Nearby Matches ({nearbyMatches.length})
             </button>
 
             <button
               onClick={() => setActiveTab("online")}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                activeTab === "online"
+              className={`px-6 py-2 rounded-lg font-semibold transition-all ${activeTab === "online"
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                   : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
-              }`}
+                }`}
             >
               Online Matches ({onlineMatches.length})
             </button>
 
             <button
               onClick={() => setActiveTab("all")}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                activeTab === "all"
+              className={`px-6 py-2 rounded-lg font-semibold transition-all ${activeTab === "all"
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                   : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
-              }`}
+                }`}
             >
               All Matches ({nearbyMatches.length + onlineMatches.length})
             </button>
@@ -166,6 +193,7 @@ export default function MatchingPage() {
                   key={match._id}
                   match={match}
                   onViewProfile={() => setSelectedMatch(match)}
+                  ConnectionHandler={() => handleConnect(match._id)}
                 />
               ))}
             </div>
@@ -186,9 +214,11 @@ export default function MatchingPage() {
 function MatchCard({
   match,
   onViewProfile,
+  ConnectionHandler,
 }: {
   match: Match;
   onViewProfile: () => void;
+  ConnectionHandler: () => void;
 }) {
   return (
     <div className="bg-gradient-to-br from-slate-800/40 to-slate-900/40 rounded-lg overflow-hidden border border-slate-700/50 backdrop-blur-md hover:border-blue-500/50 transition-all hover:shadow-lg hover:shadow-blue-500/20">
@@ -269,7 +299,9 @@ function MatchCard({
             View Profile
           </button>
 
-          <button className="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/80 to-purple-500/80 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-semibold transition-all">
+          <button
+            onClick={ConnectionHandler}
+            className="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/80 to-purple-500/80 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-semibold transition-all">
             Connect
           </button>
         </div>

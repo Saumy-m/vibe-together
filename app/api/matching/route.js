@@ -22,21 +22,19 @@ function normalizeLocation(user) {
 // ─── PURE FUNCTIONS ──────────────────────────────────────────
 
 function extractInterests(interestsString) {
-  if (!interestsString || typeof interestsString !== "string") {
+  if (!interestsString || !Array.isArray(interestsString)) {
     return [];
   }
-  return interestsString
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
+  return interestsString;
 }
 
 function getCommonInterests(userInterests, targetInterests) {
   return userInterests.filter((interest) => targetInterests.includes(interest));
 }
 
-function calculateMatchPercentage(userInterests, commonInterests) {
+function calculateMatchPercentage(userInterests, targetInterests, commonInterests) {
   if (!userInterests.length) return 0;
+  else if(targetInterests.length > userInterests.length) return Math.round((commonInterests.length / targetInterests.length) * 100);
   return Math.round((commonInterests.length / userInterests.length) * 100);
 }
 
@@ -102,7 +100,7 @@ function classifyMatches(currentUser, potentialMatches, options = {}) {
   for (const match of potentialMatches) {
     const targetInterests = extractInterests(match.interests);
     const commonInterests = getCommonInterests(currentUserInterests, targetInterests);
-    const matchPercentage = calculateMatchPercentage(currentUserInterests, commonInterests);
+    const matchPercentage = calculateMatchPercentage(currentUserInterests, targetInterests, commonInterests);
     const onlineCommonInterests = getOnlineCommonInterests(commonInterests);
     const energyBonus = getEnergyBonus(currentUser.energyLevel, match.energyLevel);
 
