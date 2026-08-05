@@ -190,7 +190,7 @@ export async function POST(req) {
       "-password"
     );
 
-    // ✅ Normalize both current user and all matches before classifying
+    // Normalize both current user and all matches before classifying
     const currentUser = normalizeUser(currentUserDoc);
     const potentialMatches = potentialMatchDocs.map(normalizeUser);
 
@@ -255,7 +255,7 @@ export async function GET(req) {
       "-password"
     );
 
-    // ✅ Normalize both current user and all matches before classifying
+    // Normalize both current user and all matches before classifying
     const currentUser = normalizeUser(currentUserDoc);
     const potentialMatches = potentialMatchDocs.map(normalizeUser);
 

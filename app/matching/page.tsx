@@ -1,9 +1,11 @@
 "use client";
 
+// import necessary React hooks and components for MatchingPage
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/navigation";
 
+// Define TypeScript interfaces for LocationAddress and Match
 interface LocationAddress {
   street?: string;
   city?: string;
@@ -25,6 +27,8 @@ interface Match {
   distanceKm?: number | null;
 }
 
+
+// MatchingPage component to display matches based on user preferences
 export default function MatchingPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"nearby" | "online" | "all">(
@@ -36,6 +40,7 @@ export default function MatchingPage() {
   const [error, setError] = useState("");
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
+
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
     if (!userEmail) {
@@ -45,6 +50,7 @@ export default function MatchingPage() {
     }
   }, [router]);
 
+  // Fetch matches from the backend API based on user email
   const fetchMatches = async (email: string) => {
     try {
       setLoading(true);
@@ -77,6 +83,8 @@ export default function MatchingPage() {
     }
   };
 
+
+  // chat Feature: Handle connection initiation with a match
   const handleConnect = async (matchId: string) => {
     const currentUserId = localStorage.getItem("userId");
     if (!currentUserId) {
@@ -107,6 +115,8 @@ export default function MatchingPage() {
     }
   };
 
+
+  // Determine which matches to display based on the active tab
   const getDisplayMatches = () => {
     if (activeTab === "nearby") return nearbyMatches;
     if (activeTab === "online") return onlineMatches;
@@ -211,6 +221,8 @@ export default function MatchingPage() {
   );
 }
 
+
+// MatchCard component to display individual match information
 function MatchCard({
   match,
   onViewProfile,
@@ -310,6 +322,8 @@ function MatchCard({
   );
 }
 
+
+// ProfileOverlay component to display detailed match information in a Card overlay
 function ProfileOverlay({
   match,
   onClose,

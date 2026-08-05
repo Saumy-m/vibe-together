@@ -1,8 +1,11 @@
+// Signup API route for handling user registration
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/model/user";
 
+
+// Handle POST request for user signup
 export async function POST(req) {
   try {
     const { name, email, password, bio, interests, energyLevel } = await req.json();
@@ -21,6 +24,7 @@ export async function POST(req) {
       );
     }
 
+    // Connect to the database and check if the user already exists
     await connectToDatabase();
     const existingUser = await User.findOne({ email });
 
@@ -31,8 +35,10 @@ export async function POST(req) {
       );
     }
 
+    // Hash the password before saving the user to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create a new user in the database
     const newUser = await User.create({
       name,
       email,

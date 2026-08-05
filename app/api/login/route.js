@@ -1,8 +1,10 @@
+// login backend imports
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/model/user";
 
+// Handle POST request for user login
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
@@ -24,6 +26,7 @@ export async function POST(req) {
       );
     }
 
+    // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {

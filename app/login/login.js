@@ -1,9 +1,11 @@
 "use client";
-
+// Login Page imports
 import Navbar from "../components/navigation.js";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+
+// Login Page Component
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -13,12 +15,15 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  //  Handle form submission for login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      // Send login data to the backend API
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -48,6 +53,7 @@ export default function LoginPage() {
     }
   };
 
+  // Handle input changes for the login form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

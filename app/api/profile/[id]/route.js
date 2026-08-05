@@ -1,6 +1,4 @@
 
-// Updated Documented lines and Interests Value type from String -> Array
-
 // import statements
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
@@ -28,6 +26,7 @@ async function reverseGeocodeLocation(latitude, longitude) {
 
     const data = await response.json();
 
+    // Extract relevant address components from the response
     if (data.address) {
       const address = data.address;
       return {
@@ -64,6 +63,7 @@ export async function GET(req, { params }) {
 
     await connectToDatabase();
 
+    // Fetch the user profile from the database, excluding sensitive fields
     const user = await User.findById(id).select(
       "-password -locationAddress -locationGeoJSON -email -__v"
     );
@@ -123,6 +123,8 @@ export async function PUT(req) {
 
     await connectToDatabase();
 
+
+    // Prepare the update data object with the provided fields
     const updateData = {
       name:         name         || "",
       bio:          bio          || "",

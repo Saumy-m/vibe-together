@@ -1,11 +1,12 @@
 "use client";
 
+/* Signup Page imports */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navigation.js";
 import ActivityDropdown, { activityLabel } from "../components/interests.js";
 
-
+/* Signup Page Component */
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -19,12 +20,14 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
+  /* Handle form submission for signup */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      /* Send signup data to the backend API */
       const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
@@ -51,8 +54,12 @@ export default function SignupPage() {
 
       localStorage.setItem("userEmail", formData.email);
       localStorage.setItem("userId", data.user.id);
+
+      /* Alert user of registration completion and redirect to profile */
       alert("Account created successfully!");
+
       router.push(`/profile/${data.user.id}`);
+
     } catch (error) {
       console.error(error);
       setError("Something went wrong");

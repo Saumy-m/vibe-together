@@ -1,9 +1,10 @@
 "use client";
 
+// Navigation Bar imports
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-//import { set } from "mongoose";
+
 
 export default function Navbar() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Navbar() {
     setLoading(false);
   }, []);
 
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -33,6 +35,8 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
+  // Handle user sign-out by clearing local storage and redirecting to the home page
   const handleSignOut = () => {
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userId");

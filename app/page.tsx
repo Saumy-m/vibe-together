@@ -1,7 +1,9 @@
+/* imports for Homepage  */
 import Navbar from "./components/navigation.js";
 import HeroSection from "./components/content.js";
 import FeatureCard from "./components/features.js";
 
+/* Homepage Component */
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
