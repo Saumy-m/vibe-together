@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section className="section-hero">
       <div className="container-max-lg text-center">
         <h1 className="heading-h1-large">
-          Find people who match your interests and energy
+          Find your circle, master your craft, feel at home.
         </h1>
 
         <p className="mt-6 text-description-light">

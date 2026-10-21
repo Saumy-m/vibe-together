@@ -3,11 +3,12 @@
 // Navigation Bar imports
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -23,7 +24,7 @@ export default function Navbar() {
     setLoading(false);
   }, []);
 
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -45,10 +46,15 @@ export default function Navbar() {
   };
 
   return (
+    // Navigation bar container with responsive design
     <nav className="nav-container">
+
+      {/* Wrapper for navigation content */}
       <div className="nav-wrapper">
+
+        {/* Logo and menu toggle button for mobile view */}
         <div className="flex items-center justify-between w-full md:w-auto">
-          {!loading && isLoggedIn ? (
+          {isLoggedIn ? (
             <span className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 cursor-default hover:from-blue-300 hover:to-purple-400 transition-all duration-300">
               VibeTogether
             </span>
@@ -61,6 +67,7 @@ export default function Navbar() {
             </Link>
           )}
 
+          {/* Toggle button for mobile menu */}
           <button
             type="button"
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -71,6 +78,7 @@ export default function Navbar() {
           </button>
         </div>
 
+        {/* Navigation links and buttons, conditionally rendered based on login state */}
         <div className={`${menuOpen ? "flex" : "hidden"} w-full flex-col gap-4 md:flex md:w-auto md:flex-row md:items-center md:gap-8`}>
           {!loading && isLoggedIn && (
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-8">
@@ -104,19 +112,23 @@ export default function Navbar() {
           )}
 
           <div className="nav-links">
-            {!loading && isLoggedIn ? (
+            {isLoggedIn ? (
               <button onClick={handleSignOut} className="btn-nav-primary">
                 Sign Out
               </button>
             ) : (
               <>
-                <Link href="/login" className="btn-nav-secondary" onClick={() => setMenuOpen(false)}>
-                  Login
-                </Link>
+                {pathname === '/login' && (
+                  <Link href="/signup" className="btn-nav-primary" onClick={() => setMenuOpen(false)}>
+                    Sign Up
+                  </Link>
+                )}
 
-                <Link href="/signup" className="btn-nav-primary" onClick={() => setMenuOpen(false)}>
-                  Sign Up
-                </Link>
+                {pathname === '/signup' && (
+                  <Link href="/login" className="btn-nav-secondary" onClick={() => setMenuOpen(false)}>
+                    Login
+                  </Link>
+                )}
               </>
             )}
           </div>

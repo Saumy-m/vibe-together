@@ -24,6 +24,15 @@ body {
 
 @layer utilities {
 
+  /* HomePage Main Frame */
+  .homepage-frame {
+    @apply min-h-screen bg-gradient-to-br from-slate-900 to-slate-800;
+  }
+  /* Login Input Main Frame */
+  .login-input-frame {
+    @apply min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6;
+  }
+
   /* Button Classes - Modern gradient and glassmorphism effects */
   .btn-primary {
     @apply px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 border border-blue-400/30 text-sm sm:text-base;

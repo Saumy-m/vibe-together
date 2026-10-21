@@ -1,4 +1,5 @@
 "use client";
+
 // Login Page imports
 import Navbar from "../components/navigation.js";
 import { useState } from "react";
@@ -7,7 +8,10 @@ import { useRouter } from "next/navigation";
 
 // Login Page Component
 export default function LoginPage() {
+  // connect router for page navigation
   const router = useRouter();
+
+  // input field state management
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,8 +39,10 @@ export default function LoginPage() {
         }),
       });
 
+      // stores the login status from response object to json format
       const data = await response.json();
 
+      // stores error message if login fails and stops loading state
       if (!response.ok) {
         setError(data.message || "Login failed");
         setLoading(false);
@@ -45,8 +51,12 @@ export default function LoginPage() {
 
       localStorage.setItem("userEmail", formData.email);
       localStorage.setItem("userId", data.user.id);
+
+      // redirects to the user's profile page after successful login
       router.push(`/profile/${data.user.id}`);
-    } catch (error) {
+    } 
+    // checks for errors during the login process and logs them to the console
+    catch (error) {
       console.error(error);
       setError("Something went wrong");
       setLoading(false);
@@ -63,7 +73,7 @@ export default function LoginPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6">
+      <main className="login-input-frame">
         <div className="card-dark">
           <h1 className="heading-h1-page">Log In</h1>
 

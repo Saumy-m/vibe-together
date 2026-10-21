@@ -6,7 +6,7 @@ import FeatureCard from "./components/features.js";
 /* Homepage Component */
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+    <main className="homepage-frame">
       <Navbar />
 
       <HeroSection />
@@ -28,7 +28,7 @@ export default function HomePage() {
 
             <FeatureCard
               title="Built-in Chat"
-              description="Stay connected through daily conversations without needing another social media app."
+              description="Stay connected through daily conversations without needing another social media app. (Feature In Development)"
             />
           </div>
         </div>

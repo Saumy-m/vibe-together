@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "VibeTogether",
-  description: "Connect with people who match your interests and energy",
+  description: "Find your circle, master your craft, feel at home.",
 };
 
 export const viewport: Viewport = {
