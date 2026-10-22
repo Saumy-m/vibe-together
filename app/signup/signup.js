@@ -4,9 +4,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navigation.js";
-import ActivityDropdown, { activityLabel } from "../components/interests.js";
+import ActivityDropdown, { activityLabel } from "../components/activities/ActivityDropdown";
 
-/* Signup Page Component */
+/* Signup Page Component
+ * `selectedInterests` stores the stable activity IDs used by both profile editing
+ * and matching. The dropdown reports changes; this page submits them to the API.
+ */
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -132,31 +135,24 @@ export default function SignupPage() {
                 onChange={setSelectedInterests}
               />
               
-              {selectedInterests?.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
-                  {selectedInterests.map((actId) => (
-                    <span key={actId} style={{
-                      display: "inline-flex", alignItems: "center", gap: "5px",
-                      padding: "3px 10px",
-                      background: "rgba(129,140,248,0.15)",
-                      border: "1px solid rgba(129,140,248,0.3)",
-                      borderRadius: "99px", color: "#a5b4fc",
-                      fontSize: "0.78rem", fontWeight: 600, textTransform: "capitalize",
-                    }}>
-                      {activityLabel(actId)}
-                      <button type="button"
-                        onClick={() => setSelectedInterests(selectedInterests.filter((x) => x !== actId))}
-                        style={{
-                          background: "none", border: "none", color: "#818cf8",
-                          cursor: "pointer", fontSize: "0.9rem", lineHeight: 1, padding: 0
-                        }}
-                        aria-label={`Remove ${activityLabel(actId)}`}>
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
+               {/* Selected activity preview: uses the same IDs as the dropdown. */}
+               {selectedInterests.length > 0 && (
+                 <div className="flex flex-wrap gap-1.5 mt-2.5">
+                   {selectedInterests.map((actId) => (
+                     <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
+                       {activityLabel(actId)}
+                       <button
+                         type="button"
+                         className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+                         onClick={() => setSelectedInterests((previous) => previous.filter((id) => id !== actId))}
+                         aria-label={`Remove ${activityLabel(actId)}`}
+                       >
+                         ×
+                       </button>
+                     </span>
+                   ))}
+                 </div>
+               )}
             </div>
 
             <select

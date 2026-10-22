@@ -4,7 +4,7 @@
 import Navbar from "../../components/navigation.js";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
-import ActivityDropdown, { activityLabel } from "../../components/interests.js";
+import ActivityDropdown, { activityLabel } from "../../components/activities/ActivityDropdown";
 
 
 // ─── ProfilePage ──────────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ export default function ProfilePage() {
     reader.readAsDataURL(file);
   };
 
-  // Instant update on every checkbox tick — writes directly into interests
+  // The dropdown sends the updated ID array; the page owns it until Save Changes.
   const handleInterestsChange = (updatedInterests) => {
     setProfileData((prev) => ({ ...prev, interests: updatedInterests }));
   };
@@ -197,16 +197,10 @@ export default function ProfilePage() {
               <div className="mb-6 p-4 rounded-lg bg-slate-700/30 border border-slate-600/50">
                 <p className="text-sm text-slate-400 font-semibold mb-3 uppercase tracking-wider">Interests</p>
                 {profileData.interests?.length > 0 ? (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  <div className="flex flex-wrap gap-2">
                     {profileData.interests.map((id) => (
-                      <span key={id} style={{
-                        padding: "4px 12px",
-                        background: "rgba(129,140,248,0.15)",
-                        border: "1px solid rgba(129,140,248,0.35)",
-                        borderRadius: "99px", color: "#a5b4fc",
-                        fontSize: "0.82rem", fontWeight: 600, textTransform: "capitalize",
-                      }}>
-                        {activityLabel(id)}
+                      <span key={id} className="rounded-full border border-indigo-400/35 bg-indigo-400/15 px-3 py-1 text-sm font-semibold text-indigo-300">
+                         {activityLabel(id)}
                       </span>
                     ))}
                   </div>
@@ -272,30 +266,24 @@ export default function ProfilePage() {
                   interests={profileData.interests}
                   onChange={handleInterestsChange}
                 />
-                {/* Live pill preview with quick-remove */}
-                {profileData.interests?.length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
-                    {profileData.interests.map((actId) => (
-                      <span key={actId} style={{
-                        display: "inline-flex", alignItems: "center", gap: "5px",
-                        padding: "3px 10px",
-                        background: "rgba(129,140,248,0.15)",
-                        border: "1px solid rgba(129,140,248,0.3)",
-                        borderRadius: "99px", color: "#a5b4fc",
-                        fontSize: "0.78rem", fontWeight: 600, textTransform: "capitalize",
-                      }}>
-                        {activityLabel(actId)}
-                        <button type="button"
-                          onClick={() => handleInterestsChange(profileData.interests.filter((x) => x !== actId))}
-                          style={{ background: "none", border: "none", color: "#818cf8",
-                            cursor: "pointer", fontSize: "0.9rem", lineHeight: 1, padding: 0 }}
-                          aria-label={`Remove ${activityLabel(actId)}`}>
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
+                 {/* Live preview. Removing a pill updates the same state as the dropdown. */}
+                 {profileData.interests.length > 0 && (
+                   <div className="flex flex-wrap gap-1.5 mt-2.5">
+                     {profileData.interests.map((actId) => (
+                       <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
+                         {activityLabel(actId)}
+                         <button
+                           type="button"
+                           className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+                           onClick={() => handleInterestsChange(profileData.interests.filter((id) => id !== actId))}
+                           aria-label={`Remove ${activityLabel(actId)}`}
+                         >
+                           ×
+                         </button>
+                       </span>
+                     ))}
+                   </div>
+                 )}
               </div>
 
               <select name="energyLevel" value={profileData.energyLevel}

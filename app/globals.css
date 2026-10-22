@@ -157,7 +157,10 @@ body {
   .container-max-md {
     @apply max-w-2xl mx-auto;
   }
-
+  /* Matching Class Mainframe */
+  .matching-class {
+    @apply min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6 py-10;
+  }
   /* Section/Layout Classes */
   .section-hero {
     @apply px-4 sm:px-6 py-16 sm:py-20 bg-gradient-to-b from-slate-900 via-blue-900/20 to-slate-900;

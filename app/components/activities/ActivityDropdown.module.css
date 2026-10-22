@@ -1,0 +1,98 @@
+/*
+  Presentation only: dropdown behavior and activity data live in separate files.
+  Replace these fallback colors with VibeTogether's existing design tokens when
+  the project's theme styles are available. Colors currently mirror the old UI.
+ */
+.container {
+  --activity-accent: var(--vt-accent, #818cf8);
+  --activity-surface: var(--vt-surface, #1e293b);
+  --activity-muted: var(--vt-muted, #94a3b8);
+  position: relative;
+  width: 100%;
+}
+
+/* Trigger: the selected count and dropdown arrow share one button. */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(51, 65, 85, 0.5);
+  border: 1.5px solid rgba(100, 116, 139, 0.5);
+  border-radius: 10px;
+  color: var(--activity-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.triggerHasSelection { color: #e2e8f0; }
+.triggerOpen { border-color: var(--activity-accent); box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2); }
+.trigger:focus-visible { outline: 2px solid var(--activity-accent); outline-offset: 2px; }
+.triggerText { flex: 1; }
+.countBadge {
+  min-width: 22px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #7c5cbf;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+.chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--activity-muted); transition: transform 0.15s; }
+.chevronOpen { transform: rotate(180deg); }
+
+/* Panel remains absolutely positioned so it does not move the surrounding form. */
+.panel {
+  position: absolute;
+  z-index: 300;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 360px;
+  overflow: hidden;
+  background: var(--activity-surface);
+  border: 1.5px solid rgba(100, 116, 139, 0.4);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  animation: vtDropIn 0.13s ease;
+}
+.searchArea { display: flex; align-items: center; position: relative; padding: 10px 12px; border-bottom: 1px solid rgba(100, 116, 139, 0.3); }
+.searchIcon { position: absolute; left: 22px; width: 15px; height: 15px; color: var(--activity-muted); pointer-events: none; }
+.searchInput {
+  width: 100%;
+  padding: 7px 30px 7px 34px;
+  background: rgba(51, 65, 85, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  border-radius: 7px;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.searchInput:focus-visible, .checkbox:focus-visible, .textButton:focus-visible, .clearSearch:focus-visible, .doneButton:focus-visible { outline: 2px solid var(--activity-accent); outline-offset: 2px; }
+/* Suppress the native search clear icon, since our button has an accessible label. */
+.searchInput::-webkit-search-cancel-button { display: none; }
+.clearSearch { position: absolute; right: 20px; background: none; border: none; color: var(--activity-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; }
+.selectionHeader { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid rgba(100, 116, 139, 0.2); color: var(--activity-muted); font-size: 0.77rem; font-weight: 500; }
+.textButton { background: none; border: none; color: var(--activity-accent); font: inherit; font-weight: 600; cursor: pointer; }
+
+/* Each label includes a native checkbox, so clicking the full row toggles it. */
+.activityList { overflow-y: auto; min-height: 0; padding: 6px 0; }
+.activityRow { display: flex; align-items: center; gap: 10px; padding: 9px 14px; cursor: pointer; user-select: none; color: #cbd5e1; font-size: 0.88rem; transition: background 0.12s; }
+.activityRow:hover { background: rgba(129, 140, 248, 0.07); }
+.activityRowSelected { background: rgba(129, 140, 248, 0.1); color: #a5b4fc; font-weight: 500; }
+.activityRowSelected:hover { background: rgba(129, 140, 248, 0.14); }
+.checkbox { width: 15px; height: 15px; flex-shrink: 0; accent-color: var(--activity-accent); cursor: pointer; }
+.checkIcon { width: 13px; height: 13px; margin-left: auto; flex-shrink: 0; color: var(--activity-accent); }
+.noResults { margin: 0; padding: 20px; text-align: center; color: var(--activity-muted); font-size: 0.85rem; }
+.footer { display: flex; justify-content: flex-end; padding: 10px 14px; border-top: 1px solid rgba(100, 116, 139, 0.3); background: rgba(15, 23, 42, 0.5); }
+.doneButton { padding: 7px 20px; background: linear-gradient(135deg, #6366f1, #7c5cbf); border: none; border-radius: 7px; color: #fff; font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.visuallyHidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@keyframes vtDropIn { from { opacity: 0; transform: translateY(-5px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .panel { animation: none; } .trigger, .chevron, .activityRow { transition: none; } }
