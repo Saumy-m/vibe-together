@@ -24,10 +24,60 @@ body {
 
 @layer utilities {
 
+  /* Tytle Styling */
+  .title-style-frame {
+    @apply flex items-center justify-between w-full md:w-auto;
+  }
+
+  /* Title Text Styling */
+  .title-text-style {
+    @apply text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 cursor-default hover:from-blue-300 hover:to-purple-400 transition-all duration-300;
+  }
+
+  /* Navigation Links Styling */
+  .nav-links {
+    @apply flex flex-col gap-4 md:flex-row md:items-center md:gap-8;
+  }
+
+  /* Navigation Link Styling */
+  .nav-link {
+    @apply text-slate-300 hover:text-blue-400 font-semibold transition-colors duration-300 relative ;
+  }
+
+  /* Navigation Bar Span */
+  .nav-bar-span {
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 ;
+  }
+
+  /* Navigation Menu Toggle Button Styling */
+  .menu-toggle-button {
+    @apply inline-flex items-center justify-center rounded-lg border border-slate-600/60 bg-slate-800/70 px-3 py-2 text-sm font-medium text-slate-200 md:hidden;
+  }
+
+  /* Navigation links container with dynamic toggle */
+  .nav-links-container {
+    @apply w-full flex-col gap-4 md:flex md:w-auto md:flex-row md:items-center md:gap-8;
+  }
   /* HomePage Main Frame */
   .homepage-frame {
     @apply min-h-screen bg-gradient-to-br from-slate-900 to-slate-800;
   }
+
+  /* HomePage Description */
+  .Homepage-descript {
+    @apply mt-6 text-lg text-slate-400 max-w-2xl mx-auto;
+  }
+
+  /* HomePage Content Container */
+  .homepage-content-container {
+    @apply max-w-6xl mx-auto text-center;
+  }
+
+  /* HomePage Buttons Container */
+  .homepage-buttons-container {
+    @apply mt-8 flex flex-col sm:flex-row justify-center gap-4;
+  }
+  
   /* Login Input Main Frame */
   .login-input-frame {
     @apply min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6;
@@ -42,11 +92,11 @@ body {
     @apply px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold bg-gradient-to-r from-slate-700 to-slate-800 text-white hover:from-slate-600 hover:to-slate-700 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 border border-slate-600/50 text-sm sm:text-base;
   }
 
-  .btn-nav-primary {
+  .nav-button-prim {
     @apply px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300 border border-blue-400/30 text-sm sm:text-base;
   }
 
-  .btn-nav-secondary {
+  .nav-button-sec {
     @apply px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-semibold text-slate-300 border border-slate-600/50 hover:border-slate-400/80 hover:text-white hover:bg-slate-700/50 transition-all duration-300 text-sm sm:text-base;
   }
 
@@ -102,15 +152,7 @@ body {
   .text-description {
     @apply text-lg text-slate-300 max-w-2xl mx-auto;
   }
-
-  .text-description-light {
-    @apply text-lg text-slate-400 max-w-2xl mx-auto;
-  }
-
-  /* Container Classes */
-  .container-max-lg {
-    @apply max-w-6xl mx-auto;
-  }
+  
 
   .container-max-md {
     @apply max-w-2xl mx-auto;

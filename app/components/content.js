@@ -3,22 +3,22 @@ import Link from "next/link";
 export default function HeroSection() {
   return (
     <section className="section-hero">
-      <div className="container-max-lg text-center">
+      <div className="homepage-content-container">
         <h1 className="heading-h1-large">
           Find your circle, master your craft, feel at home.
         </h1>
 
-        <p className="mt-6 text-description-light">
+        <p className="Homepage-descript">
           VibeTogether helps people connect through shared activities, similar
           vibes, and meaningful conversations — all in one place.
         </p>
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/signup" className="btn-primary">
+        <div className="homepage-buttons-container">
+          <Link href="/signup" className="nav-button-prim">
             Get Started
           </Link>
 
-          <Link href="/login" className="btn-secondary">
+          <Link href="/login" className="nav-button-sec">
             Login
           </Link>
         </div>
