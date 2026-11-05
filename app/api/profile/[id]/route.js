@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/model/user";
+import { createClient } from "@/lib/supabase/server";
 
 // function to identify location from latitude longtitude coordinates
 // used LocationIQ API to Reverse Geocode coordinates to Location Data
@@ -61,12 +62,36 @@ export async function GET(req, { params }) {
       );
     }
 
-    await connectToDatabase();
+    //await connectToDatabase();
+    const supabase = await createClient();
+
 
     // Fetch the user profile from the database, excluding sensitive fields
-    const user = await User.findById(id).select(
-      "-password -locationAddress -locationGeoJSON -email -__v"
-    );
+    const { data: user, error: err } = await supabase.from("profiles").select("*").eq("id", id).single();
+
+    //console.log("Supabase fetch result:", user, err);
+
+    if (err) {
+      console.error("Supabase fetch error:", err);
+      if (err.code === "401") {
+        return NextResponse.json(
+          { message: "Unauthorized access" },
+          { status: 401 }
+        );
+      }
+      else if (err.code === "404") {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
+      
+      return NextResponse.json(
+        { message: "Error fetching user profile", error: err.message },
+        { status: 500 }
+      );
+
+    }
 
     if (!user) {
       return NextResponse.json(
@@ -81,8 +106,8 @@ export async function GET(req, { params }) {
           name: user.name,
           bio: user.bio,
           interests: user.interests, 
-          energyLevel: user.energyLevel,
-          profilePhoto: user.profilePhoto,
+          energyLevel: user.energy_level,
+          profilePhoto: user.profile_photo,
           location: user.location,
         },
       },
@@ -99,9 +124,10 @@ export async function GET(req, { params }) {
 
 // recieves user request for login or profile updates
 export async function PUT(req) {
+
+
   try {
-    const {
-      email,
+     const {
       name,
       bio,
       interests,   
@@ -112,46 +138,90 @@ export async function PUT(req) {
       location,
     } = await req.json();
 
-    console.log("Completed request body access");
+    //console.log("Completed request body access");
 
-    if (!email) {
+    // if (!email) {
+    //   return NextResponse.json(
+    //     { message: "Email is required" },
+    //     { status: 400 }
+    //   );
+    // }
+
+    //await connectToDatabase();
+
+    const supabase = await createClient();
+
+    const {data: fetchuser, error: err} = await supabase.auth.getUser();
+    if (err) {
+      console.error("Supabase auth error:", err);
+      if (err.code === "401") {
+        return NextResponse.json(
+          { message: "Unauthorized access" },
+          { status: 401 }
+        );
+      }
+      else if (err.code === "404") {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
+
       return NextResponse.json(
-        { message: "Email is required" },
-        { status: 400 }
+        { message: "Error fetching user" },
+        { status: 500 }
       );
     }
 
-    await connectToDatabase();
-
-
     // Prepare the update data object with the provided fields
     const updateData = {
-      name:         name         || "",
-      bio:          bio          || "",
+      name:         name         || fetchuser.user?.user_metadata?.name,
+      bio:          bio          || fetchuser.user?.user_metadata?.bio,
       interests: Array.isArray(interests) ? interests : [],
-      energyLevel:  energyLevel  || "",
-      profilePhoto: profilePhoto || "",
-      location:     location     || "",
+      energy_level:  energyLevel  || fetchuser.user?.user_metadata?.energy_level,
+      profile_photo: profilePhoto || fetchuser.user?.user_metadata?.profile_photo,
+      location_address:     location     || fetchuser.user?.user_metadata?.location_address,
     };
 
     if (latitude && longitude) {
-      updateData.locationGeoJSON = {
+      updateData.location_address = {
         type: "Point",
         coordinates: [longitude, latitude],
       };
 
       const addressData = await reverseGeocodeLocation(latitude, longitude);
       if (addressData) {
-        updateData.locationAddress = addressData;
+        updateData.location_address = addressData;
         updateData.location = [addressData.street, addressData.city, addressData.state]
           .filter(Boolean)
           .join(", ");
       }
     }
 
-    const user = await User.findOneAndUpdate({ email }, updateData, { new: true });
+    //const user = await User.findOneAndUpdate({ email }, updateData, { new: true });
+    const{data: updatedUser, error: updateErr} = await supabase.from("profiles").update(updateData).eq("id", fetchuser.user?.id).select().single();
+    if (updateErr) {
+      console.error("Supabase update error:", updateErr);
+      if (updateErr.code === "401") {
+        return NextResponse.json(
+          { message: "Unauthorized access" },
+          { status: 401 }
+        );
+      }
+      else if (updateErr.code === "404") {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
 
-    if (!user) {
+      return NextResponse.json(
+        { message: "Error updating profile" },
+        { status: 500 }
+      );
+    }
+
+    if (!updatedUser) {
       return NextResponse.json(
         { message: "User not found" },
         { status: 404 }
@@ -162,14 +232,14 @@ export async function PUT(req) {
       {
         message: "Profile updated successfully",
         profile: {
-          name:            user.name,
-          bio:             user.bio,
-          interests:       user.interests,   // ← returned so frontend can sync
-          energyLevel:     user.energyLevel,
-          profilePhoto:    user.profilePhoto,
-          location:        user.location,
-          locationAddress: user.locationAddress,
-          locationGeoJSON: user.locationGeoJSON,
+          name:            updatedUser.name,
+          bio:             updatedUser.bio,
+          interests:       updatedUser.interests,   
+          energy_level:     updatedUser.energy_level,
+          profile_photo:    updatedUser.profile_photo,
+          location:        updatedUser.location,
+          location_address: updatedUser.location_address,
+          // locationGeoJSON: updatedUser.locationGeoJSON,
         },
       },
       { status: 200 }

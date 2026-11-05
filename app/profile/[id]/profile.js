@@ -4,7 +4,10 @@
 import Navbar from "../../components/navigation.js";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
-import ActivityDropdown, { activityLabel } from "../../components/activities/ActivityDropdown";
+import ActivityDropdown from "../../components/activities/ActivityDropdown";
+
+import { activityLabel } from "../../components/activities/activities";
+import { createClient } from "@/lib/supabase/client";
 
 
 // ─── ProfilePage ──────────────────────────────────────────────────────────────
@@ -13,18 +16,21 @@ export default function ProfilePage() {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    name:         "",
-    bio:          "",
-    interests:    [],   // ← always an array; replaces the old comma string
-    energyLevel:  "",
-    location:     "",
+    name: "",
+    bio: "",
+    interests: [],   // ← always an array; replaces the old comma string
+    energyLevel: "",
+    location: "",
     profilePhoto: "",
   });
-  const [loading, setLoading]          = useState(false);
-  const [error,   setError]            = useState("");
-  const [userEmail, setUserEmail]      = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [geoCoordinates, setGeoCoords] = useState(null);
   const [loggedInUserId, setLoggedInUserId] = useState(null);
+
+  // Initialize the Supabase browser client once.
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
@@ -37,7 +43,7 @@ export default function ProfilePage() {
   const fetchProfile = async (profileId) => {
     try {
       const response = await fetch(`/api/profile/${profileId}`);
-      const data     = await response.json();
+      const data = await response.json();
       console.log("API response:", data);
 
       if (response.ok) {
@@ -47,8 +53,8 @@ export default function ProfilePage() {
           interests: Array.isArray(data.user.interests)
             ? data.user.interests
             : typeof data.user.interests === "string" && data.user.interests
-            ? data.user.interests.split(",").map((s) => s.trim())
-            : [],
+              ? data.user.interests.split(",").map((s) => s.trim())
+              : [],
         });
       } else {
         setError(data.message || "Failed to load profile");
@@ -93,9 +99,9 @@ export default function ProfilePage() {
       },
       (err) => {
         const msgs = {
-          [err.PERMISSION_DENIED]:    "Location permission denied. Please enable it in your browser settings.",
+          [err.PERMISSION_DENIED]: "Location permission denied. Please enable it in your browser settings.",
           [err.POSITION_UNAVAILABLE]: "Location information is unavailable right now.",
-          [err.TIMEOUT]:              "Getting your location took too long. Please try again.",
+          [err.TIMEOUT]: "Getting your location took too long. Please try again.",
         };
         setError(msgs[err.code] || "An unknown error occurred while getting your location.");
       },
@@ -111,18 +117,18 @@ export default function ProfilePage() {
 
     try {
       // interests is already the array — spreads straight into saveData
-      const saveData = { email: userEmail, ...profileData };
+      const saveData = { ...profileData };
 
       if (geoCoordinates) {
-        saveData.latitude  = geoCoordinates.latitude;
+        saveData.latitude = geoCoordinates.latitude;
         saveData.longitude = geoCoordinates.longitude;
         delete saveData.location;
       }
 
       const response = await fetch(`/api/profile/${id}`, {
-        method:  "PUT",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(saveData),
+        body: JSON.stringify(saveData),
       });
 
       const data = await response.json();
@@ -152,7 +158,7 @@ export default function ProfilePage() {
   };
 
   // Determine if the logged-in user is viewing their own profile
-  const isOwnProfile   = loggedInUserId === id;
+  const isOwnProfile = loggedInUserId === id;
 
   return (
     <>
@@ -200,7 +206,7 @@ export default function ProfilePage() {
                   <div className="flex flex-wrap gap-2">
                     {profileData.interests.map((id) => (
                       <span key={id} className="rounded-full border border-indigo-400/35 bg-indigo-400/15 px-3 py-1 text-sm font-semibold text-indigo-300">
-                         {activityLabel(id)}
+                        {activityLabel(id)}
                       </span>
                     ))}
                   </div>
@@ -227,7 +233,7 @@ export default function ProfilePage() {
                 <p className="text-lg text-slate-300">{profileData.location || "Not set"}</p>
               </div>
 
-              {isOwnProfile && (
+              {(
                 <button onClick={() => setIsEditing(true)} className="btn-secondary w-full">
                   Edit Profile
                 </button>
@@ -236,7 +242,7 @@ export default function ProfilePage() {
           )}
 
           {/* ── EDIT MODE ── */}
-          {isEditing && isOwnProfile && (
+          {isEditing && (
             <form className="form-container" onSubmit={handleSave}>
 
               <div className="mb-6">
@@ -266,24 +272,24 @@ export default function ProfilePage() {
                   interests={profileData.interests}
                   onChange={handleInterestsChange}
                 />
-                 {/* Live preview. Removing a pill updates the same state as the dropdown. */}
-                 {profileData.interests.length > 0 && (
-                   <div className="flex flex-wrap gap-1.5 mt-2.5">
-                     {profileData.interests.map((actId) => (
-                       <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
-                         {activityLabel(actId)}
-                         <button
-                           type="button"
-                           className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
-                           onClick={() => handleInterestsChange(profileData.interests.filter((id) => id !== actId))}
-                           aria-label={`Remove ${activityLabel(actId)}`}
-                         >
-                           ×
-                         </button>
-                       </span>
-                     ))}
-                   </div>
-                 )}
+                {/* Live preview. Removing a pill updates the same state as the dropdown. */}
+                {profileData.interests.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2.5">
+                    {profileData.interests.map((actId) => (
+                      <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
+                        {activityLabel(actId)}
+                        <button
+                          type="button"
+                          className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+                          onClick={() => handleInterestsChange(profileData.interests.filter((id) => id !== actId))}
+                          aria-label={`Remove ${activityLabel(actId)}`}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <select name="energyLevel" value={profileData.energyLevel}

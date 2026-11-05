@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "../components/navigation.js";
 import ActivityDropdown, { activityLabel } from "../components/activities/ActivityDropdown";
 
+
 /* Signup Page Component
  * `selectedInterests` stores the stable activity IDs used by both profile editing
  * and matching. The dropdown reports changes; this page submits them to the API.
@@ -47,7 +48,15 @@ export default function SignupPage() {
       });
 
       const data = await response.json();
-      console.log("Signup response:", data);
+      //console.log("Signup response:", data);
+      //attempt user information
+      if (data.user) {
+        const name = data.user.user_metadata.name;
+        const bio = data.user.user_metadata.bio;
+        const interests = data.user.user_metadata.interests;
+
+        console.log("Registered user name:", name);
+      }
 
       if (!response.ok) {
         setError(data.message || "Signup failed");
@@ -55,13 +64,15 @@ export default function SignupPage() {
         return;
       }
 
-      localStorage.setItem("userEmail", formData.email);
-      localStorage.setItem("userId", data.user.id);
+      // localStorage.setItem("userEmail", formData.email);
+      // //localStorage.setItem("userId", data.user.id);
 
-      /* Alert user of registration completion and redirect to profile */
-      alert("Account created successfully!");
+      // /* Alert user of registration completion and redirect to profile */
+      // alert("Account created successfully!");
 
-      router.push(`/profile/${data.user.id}`);
+      // router.push(`/profile/${data.user.id}`);
+      
+      router.push("/login");
 
     } catch (error) {
       console.error(error);
@@ -134,25 +145,25 @@ export default function SignupPage() {
                 interests={selectedInterests}
                 onChange={setSelectedInterests}
               />
-              
-               {/* Selected activity preview: uses the same IDs as the dropdown. */}
-               {selectedInterests.length > 0 && (
-                 <div className="flex flex-wrap gap-1.5 mt-2.5">
-                   {selectedInterests.map((actId) => (
-                     <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
-                       {activityLabel(actId)}
-                       <button
-                         type="button"
-                         className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
-                         onClick={() => setSelectedInterests((previous) => previous.filter((id) => id !== actId))}
-                         aria-label={`Remove ${activityLabel(actId)}`}
-                       >
-                         ×
-                       </button>
-                     </span>
-                   ))}
-                 </div>
-               )}
+
+              {/* Selected activity preview: uses the same IDs as the dropdown. */}
+              {selectedInterests.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                  {selectedInterests.map((actId) => (
+                    <span key={actId} className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/30 bg-indigo-400/15 px-2.5 py-1 text-xs font-semibold text-indigo-300">
+                      {activityLabel(actId)}
+                      <button
+                        type="button"
+                        className="text-indigo-400 hover:text-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+                        onClick={() => setSelectedInterests((previous) => previous.filter((id) => id !== actId))}
+                        aria-label={`Remove ${activityLabel(actId)}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             <select

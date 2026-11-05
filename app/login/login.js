@@ -4,6 +4,7 @@
 import Navbar from "../components/navigation.js";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 
 
 // Login Page Component
@@ -34,31 +35,37 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: formData.email,
+          email: formData.email.trim(),
           password: formData.password,
         }),
       });
 
-      // stores the login status from response object to json format
+      // Convert API response to JSON
       const data = await response.json();
 
-      // stores error message if login fails and stops loading state
+      // Handle login failure
       if (!response.ok) {
         setError(data.message || "Login failed");
-        setLoading(false);
         return;
       }
 
-      localStorage.setItem("userEmail", formData.email);
-      localStorage.setItem("userId", data.user.id);
+      // Ensure login response contains the user's UUID
+      if (!data.user?.id) {
+        setError("User information missing from login response");
+        return;
+      }
 
-      // redirects to the user's profile page after successful login
+      // Redirect the authenticated user to their profile
       router.push(`/profile/${data.user.id}`);
-    } 
-    // checks for errors during the login process and logs them to the console
-    catch (error) {
-      console.error(error);
+      //router.refresh();
+
+    } catch (error) {
+      // Handle unexpected request or network errors
+      console.error("Login error:", error);
       setError("Something went wrong");
+
+    } finally {
+      // Reset loading state after request completion
       setLoading(false);
     }
   };
